@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>项目信息维护</title>
+		<script src="js/jquery.js"></script>
+		<script src="layui.js" charset="utf-8"></script>
+		<script type="text/javascript" src="./js/getUrlParam.js"></script>
+	</head>
+
+	<body>
+		
+		<h1 align="center">项目信息维护</h1>
+		<br />
+		<br />
+
+		标题：<span id="name"></span>
+		<br /> 标题：
+		<span id="typename"></span>
+		<br /> 标题：
+		<span id="must"></span>
+		<br /> 标题：
+		<span id="reference"></span>
+		<br />
+		<span id="state"></span>
+		<br />
+
+
+		<input type="button" onclick="window.history.back()" value="返回" />
+		<script>
+			function geturl(url) {
+
+				return "http://localhost:8080/" + url
+			}
+			var a = UrlParam.paramValues("id");　
+
+			$(function() {
+				$.ajax({
+					url: geturl("detail") + "?id=" + a,
+					type: 'get',
+					dataType: 'json',
+					success: function(data) {
+
+						$("#name").html(data.data.name);
+						$("#typename").html(data.data.typename);
+						$("#must").html(data.data.must);
+						$("#reference").html(data.data.reference);
+						$("#state").html(data.data.state);
+					}
+
+				})
+
+			})
+		</script>
+
+	</body>
+
+</html>

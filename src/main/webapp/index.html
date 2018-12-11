@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>体检项目</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="css/layui.css"  media="all">
+    <script src="js/jquery.js"></script>
+    <script src="layui.js" charset="utf-8"></script>
+    <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+
+<table class="layui-hide" id="test" lay-filter="test"></table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail" href="healthDetail.html">修改</a>
+</script>
+
+<script>
+    
+    
+    function geturl(url) {
+        return "http://localhost:8080" + url
+    }
+    
+    layui.use('table', function(){
+        var table = layui.table;
+
+        table.render({
+            elem: '#test'
+            ,url:'/listAll'
+            ,cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+
+            response: {
+                statusName: 'code' //规定数据状态的字段名称，默认：code
+                ,
+                statusCode: 1000 //规定成功的状态码，默认：0
+                ,
+                msgName: 'msg' //规定状态信息的字段名称，默认：msg
+                ,
+                countName: 'count' //规定数据总数的字段名称，默认：count
+                ,
+                dataName: 'data' //规定数据列表的字段名称，默认：data
+            },
+
+            cols: [[
+                {field:'id', width:'10%', title: 'ID', sort: true}
+                ,{field:'name', width:'15%', title: '项目名称'}
+                ,{field:'typename', width:'15%', title: '所属类型',sort: true}
+                ,{field:'must', width:'10%', title: '是否必查', sort: true}
+                ,{field:'reference', width:'15%', title: '参考值'}
+                ,{field:'price', title: '价格', width: '10%',sort: true} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                ,{field:'state', title: '说明', width:'15%', /*sort: true*/}
+                ,{field:'detail', title: '操作', toolbar: '#barDemo', width:150}
+            ]]
+            , page: true
+
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'detail'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.email
+                }, function(value, index){
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

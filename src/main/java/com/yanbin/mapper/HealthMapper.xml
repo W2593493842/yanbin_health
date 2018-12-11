@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yanbin.dao.HealthMapper">
+    <resultMap id="BaseResultMap" type="com.yanbin.pojo.Health">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="must" property="must" jdbcType="VARCHAR"/>
+        <result column="reference" property="reference" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="INTEGER"/>
+        <result column="state" property="state" jdbcType="VARCHAR"/>
+        <result column="tid" property="tid" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, name, must, reference, price, state, tid
+    </sql>
+
+
+
+    <!--查询用于展示-->
+    <select id="selectById" resultType="com.yanbin.pojo.Health">
+    select h.id as id ,h.`name` as name,h.must as must,h.reference as reference ,h.price as price,h.state as state,ht.typename as typename
+    from health as h
+    INNER JOIN health_type as ht
+    ON h.tid = ht.id
+    </select>
+
+
+    <!--根据id查询详细信息用于修改-->
+    <select id="getHealthDetailById" resultMap="BaseResultMap">
+        select h.`name`,h.must,h.reference,h.price,h.state,ht.typename
+        FROM health as h
+        LEFT OUTER JOIN health_type as ht
+        ON h.id = ht.id
+        where h.id = #{id}
+    </select>
+
+
+
+
+    <select id="select" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from health
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from health
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" parameterType="com.yanbin.pojo.Health">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into health (name, must, reference,
+        price, state, tid)
+        values (#{name,jdbcType=VARCHAR}, #{must,jdbcType=VARCHAR}, #{reference,jdbcType=VARCHAR},
+        #{price,jdbcType=INTEGER}, #{state,jdbcType=VARCHAR}, #{tid,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="com.yanbin.pojo.Health">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into health
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                name,
+            </if>
+            <if test="must != null">
+                must,
+            </if>
+            <if test="reference != null">
+                reference,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="tid != null">
+                tid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="must != null">
+                #{must,jdbcType=VARCHAR},
+            </if>
+            <if test="reference != null">
+                #{reference,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=INTEGER},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="tid != null">
+                #{tid,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!--修改信息-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.yanbin.pojo.Health">
+        update health
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="must != null">
+                must = #{must,jdbcType=VARCHAR},
+            </if>
+            <if test="reference != null">
+                reference = #{reference,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=INTEGER},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=VARCHAR},
+            </if>
+            <if test="tid != null">
+                tid = #{tid,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yanbin.pojo.Health">
+    update health
+    set name = #{name,jdbcType=VARCHAR},
+      must = #{must,jdbcType=VARCHAR},
+      reference = #{reference,jdbcType=VARCHAR},
+      price = #{price,jdbcType=INTEGER},
+      state = #{state,jdbcType=VARCHAR},
+      tid = #{tid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
